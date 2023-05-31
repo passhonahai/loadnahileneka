@@ -1,0 +1,36 @@
+
+// Write a program for ResultSet interface
+// CODE : 
+import java.sql.*;
+
+public class Practical03 {
+    public static void main(String[] args) {
+        String jdbcUrl = "jdbc:mysql://localhost:3306/studentDB";
+        String username = "root";
+        String password = "";
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            System.out.println("MySQL JDBC driver loaded");
+            Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
+            System.out.println("Connected to database");
+            Statement statement = connection.createStatement();
+            String sql = "SELECT name, department, class, contactno FROM studentInfo";
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                String name = resultSet.getString("name");
+                String department = resultSet.getString("department");
+                String studentClass = resultSet.getString("class");
+                int contactNo = resultSet.getInt("contactno");
+                System.out.println("Name: " + name + ", Department: " + department + ", Class: " + studentClass + ", Contact No: " + contactNo);
+            }
+
+            connection.close();
+            System.out.println("Connection closed");
+        } catch (ClassNotFoundException e) {
+            System.out.println("MySQL JDBC driver not found");
+        } catch (SQLException e) {
+            System.out.println("SQL Exception: " + e.getMessage());
+        }
+    }
+}

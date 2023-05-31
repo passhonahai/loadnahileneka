@@ -1,0 +1,40 @@
+Write a program to execute a SQL query in JDBC?
+CODE : 
+import java.sql.*;
+
+public class Practical02 {
+    public static void main(String[] args) {
+        String jdbcUrl = "jdbc:mysql://localhost:3306/studentdb";
+        String username = "root";
+        String password = ""; 
+
+        try {
+            // Load the MySQL driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            System.out.println("MySQL JDBC driver loaded");
+
+            // Connect to the database
+            Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
+            System.out.println("Connected to database");
+
+            Statement statement = connection.createStatement();
+
+            // Execute a SQL query
+            String sql = "SELECT * FROM studentInfo ";
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next()) {
+                String name = resultSet.getString("name");
+                long contact_no = resultSet.getInt("contact_no");
+                System.out.println("Name: " + name + ", Contact Number: " + contact_no);
+            }
+
+            connection.close();
+            System.out.println("Connection closed");
+        } catch (ClassNotFoundException e) {
+            System.out.println("MySQL JDBC driver not found");
+        } catch (SQLException e) {
+            System.out.println("SQL Exception: " + e.getMessage());
+        }
+    }
+}

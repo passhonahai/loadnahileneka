@@ -1,0 +1,16 @@
+// CalculatorBean.java: This program implements a stateless session bean that exposes two methods: add and subtract. The add method takes two integers as input and returns their sum, while the subtract method takes two integers as input and returns their difference.
+
+// CODE : 
+import javax.ejb.Stateless;
+
+@Stateless
+public class Practical24 {
+
+    public int add(int num1, int num2) {
+        return num1 + num2;
+    }
+
+    public int subtract(int num1, int num2) {
+        return num1 - num2;
+    }
+}

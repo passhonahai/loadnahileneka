@@ -1,0 +1,21 @@
+// HelloClient.java: This program implements a client for the "Hello, World" server. It uses RMI to invoke the sayHello method on the server and print the result.
+
+// CODE : 
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
+public class Practical12 {
+    public static void main(String[] args) {
+        try {
+            Registry registry = LocateRegistry.getRegistry("localhost");
+
+            Hello stub = (Hello) registry.lookup("HelloServer");
+            String message = stub.sayHello();
+
+            System.out.println(message);
+        } catch (Exception e) {
+            System.err.println("Client exception: " + e.toString());
+            e.printStackTrace();
+        }
+    }
+}

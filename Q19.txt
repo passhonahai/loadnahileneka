@@ -1,0 +1,6 @@
+// HelloWorld.jsp: This program implements a basic JSP page that simply prints "Hello, World!" on the browser.
+<html>
+   <body>
+      <% out.println("Hello, World!"); %>
+   </body>
+</html>

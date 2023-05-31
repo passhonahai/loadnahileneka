@@ -1,0 +1,74 @@
+// FileUploadServlet.java: This program implements a file upload page that allows users to upload files to the server. It saves the uploaded files to a specified directory on the server.
+
+// CODE : 
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+
+public class FileUploadServlet extends HttpServlet {
+    
+    private static final long serialVersionUID = 1L;
+    private static final String UPLOAD_DIRECTORY = "/uploads"; 
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+
+        boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+        if (!isMultipart) {
+            out.println("<html><body><h1>File upload error</h1><p>No file was uploaded</p></body></html>");
+            return;
+        }
+
+        FileItemFactory factory = new DiskFileItemFactory();
+
+        ServletFileUpload upload = new ServletFileUpload(factory);
+
+        upload.setSizeMax(1024 * 1024); 
+
+        String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIRECTORY;
+        File uploadDir = new File(uploadPath);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdir();
+        }
+
+        try {
+           
+            List<FileItem> fileItems = upload.parseRequest(request);
+          
+            Iterator<FileItem> iter = fileItems.iterator();
+            while (iter.hasNext()) {
+                FileItem item = iter.next();
+                if (item.isFormField()) {
+                    String fieldName = item.getFieldName();
+                    String fieldValue = item.getString();
+                    out.println(fieldName + ": " + fieldValue + "<br/>");
+                } else { // Handle uploaded files
+                    String fileName = item.getName();
+                    String filePath = uploadPath + File.separator + fileName;
+                    File uploadedFile = new File(filePath);
+                    item.write(uploadedFile);
+                    out.println("File " + fileName + " uploaded successfully.<br/>");
+                }
+            }
+
+            out.println("<html><body><h1>File upload complete</h1></body></html>");
+        } catch (Exception ex) {
+            out.println("<html><body><h1>File upload error</h1><p>" + ex.getMessage() + "</p></body></html>");
+        } finally {
+            out.close();
+        }
+    }
+}

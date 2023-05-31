@@ -1,0 +1,21 @@
+// Login.jsp: This program implements a login page using JSP and servlets. It accepts username and password from the user, and checks if they match with the database. If the login is successful, the user is redirected to a welcome page.
+// CODE : 
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Login Page</title>
+</head>
+<body>
+	<h1>Login Page</h1>
+	<form method="post" action="/LoginServlet">
+		<label for="email">Email:</label>
+		<input type="email" name="email" id="email" required><br><br>
+		<label for="password">Password:</label>
+		<input type="password" name="password" id="password" required><br><br>
+		<input type="submit" value="Login">
+	</form>
+</body>
+</html>

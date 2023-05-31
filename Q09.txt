@@ -1,0 +1,41 @@
+// CalculatorServer.java: This program implements a simple calculator server that exposes two methods: add and subtract.
+// CODE : 
+// Practical09.java
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+public class Practical09 extends UnicastRemoteObject implements Calculator {
+    public Practical09() throws RemoteException {
+        super();
+    }
+
+    public int add(int a, int b) throws RemoteException {
+        return a + b;
+    }
+
+    public int subtract(int a, int b) throws RemoteException {
+        return a - b;
+    }
+
+    public static void main(String[] args) {
+        try {
+            Practical09 server = new Practical09();
+            java.rmi.registry.LocateRegistry.createRegistry(1099);
+            java.rmi.Naming.rebind("//localhost/Calculator", server);
+            System.out.println("Server started successfully");
+        } catch (Exception e) {
+            System.err.println("Server exception: " + e.toString());
+            e.printStackTrace();
+        }
+    }
+}
+
+// Calculator.java
+import java.rmi.*;
+
+public interface Calculator extends Remote {
+
+    public int add(int a, int b) throws RemoteException;
+
+    public int subtract(int a, int b) throws RemoteException;
+}

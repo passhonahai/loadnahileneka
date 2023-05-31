@@ -1,0 +1,40 @@
+
+// Write a program to perform batch processing in JDBC?
+// CODE : 
+import java.sql.*;
+
+public class Practical08 {
+    public static void main(String[] args) {
+        String jdbcUrl = "jdbc:mysql://localhost:3306/studentDB";
+        String username = "root";
+        String password = "";
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            System.out.println("MySQL JDBC driver loaded");
+
+            Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
+            System.out.println("Connected to database");
+            Statement statement = connection.createStatement();
+
+            statement.addBatch("INSERT INTO studentInfo (name, department, class, contact_no) VALUES ('Anish', 'Computer Science', '1A', 1234567890)");
+            statement.addBatch("INSERT INTO studentInfo (name, department, class, contact_no) VALUES ('Sumit', 'Mathematics', '2B', 2345678901)");
+            statement.addBatch("INSERT INTO studentInfo (name, department, class, contact_no) VALUES ('Abuzar', 'Physics', '3C', 3456789012)");
+
+            int[] updateCounts = statement.executeBatch();
+            System.out.println("Batch processing completed");
+
+            for (int i = 0; i < updateCounts.length; i++) {
+                System.out.println("Statement " + (i + 1) + " affected " + updateCounts[i] + " rows");
+            }
+
+            statement.close();
+            connection.close();
+            System.out.println("Connection closed");
+        } catch (ClassNotFoundException e) {
+            System.out.println("MySQL JDBC driver not found");
+        } catch (SQLException e) {
+            System.out.println("SQL Exception: " + e.getMessage());
+        }
+    }
+}

@@ -1,0 +1,45 @@
+
+// Write a program to handle errors and exceptions in JDBC?
+// CODE : 
+import java.sql.*;
+
+public class Practical05 {
+    public static void main(String[] args) {
+        String jdbcUrl = "jdbc:mysql://localhost:3306/studentDB";
+        String username = "root";
+        String password = ""; 
+
+        try {
+            // Load the MySQL driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            System.out.println("MySQL JDBC driver loaded");
+
+            // Connect to the database
+            Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
+            System.out.println("Connected to database");
+
+            // Create a SQL statement
+            Statement statement = connection.createStatement();
+
+            // Execute an invalid SQL query
+            String sql = "SELECT * FROM nonexistent_table";
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            // We should not reach this point because the above query is invalid
+            System.out.println("Query executed successfully");
+
+            // Close the statement and connection
+            statement.close();
+            connection.close();
+            System.out.println("Connection closed");
+        } catch (ClassNotFoundException e) {
+            System.out.println("MySQL JDBC driver not found");
+        } catch (SQLException e) {
+            System.out.println("SQL Exception: " + e.getMessage());
+
+            // Print the error code and SQL state
+            System.out.println("Error code: " + e.getErrorCode());
+            System.out.println("SQL state: " + e.getSQLState());
+        }
+    }
+}

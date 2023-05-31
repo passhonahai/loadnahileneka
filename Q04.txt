@@ -1,0 +1,39 @@
+
+// Write a program for PreparedStatement in JDBC?
+// CODE : 
+import java.sql.*;
+
+public class Practical04 {
+    public static void main(String[] args) {
+        String jdbcUrl = "jdbc:mysql://localhost:3306/studentDB";
+        String username = "root";
+        String password = "";
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            System.out.println("MySQL JDBC driver loaded");
+            
+            Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
+            System.out.println("Connected to database");
+            
+            String sql = "INSERT INTO studentInfo (name, department, class, contact_no) VALUES (?, ?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            
+            statement.setString(1, "John Doe");
+            statement.setString(2, "Computer Science");
+            statement.setString(3, "First Year");
+            statement.setInt(4, 1234567890);
+            
+            int rowsInserted = statement.executeUpdate();
+            System.out.println(rowsInserted + " row(s) inserted");
+            
+            statement.close();
+            connection.close();
+            System.out.println("Connection closed");
+        } catch (ClassNotFoundException e) {
+            System.out.println("MySQL JDBC driver not found");
+        } catch (SQLException e) {
+            System.out.println("SQL Exception: " + e.getMessage());
+        }
+    }
+}

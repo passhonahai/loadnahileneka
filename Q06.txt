@@ -1,0 +1,43 @@
+
+// Write a program to implement transection in JDBC
+// CODE : 
+import java.sql.*;
+public class Practical06 {
+    public static void main(String[] args) {
+        String jdbcUrl = "jdbc:mysql://localhost:3306/studentDB";
+        String username = "root";
+        String password = "";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            System.out.println("MySQL JDBC driver loaded");
+
+            Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
+            System.out.println("Connected to database");
+            connection.setAutoCommit(false);
+
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO studentInfo (name, department, class, contact_no) VALUES (?, ?, ?, ?)");
+            preparedStatement.setString(1, "Anish Kumar");
+            preparedStatement.setString(2, "Computer Science");
+            preparedStatement.setString(3, "A");
+            preparedStatement.setInt(4, 741538570);
+            preparedStatement.executeUpdate();
+
+            connection.commit();
+            System.out.println("Transaction committed");
+            preparedStatement.close();
+            connection.close();
+            System.out.println("Connection closed");
+        } catch (ClassNotFoundException e) {
+            System.out.println("MySQL JDBC driver not found");
+        } catch (SQLException e) {
+            System.out.println("SQL Exception: " + e.getMessage());
+            try {
+                Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
+                connection.rollback();
+                System.out.println("Transaction rolled back");
+            } catch (SQLException ex) {
+                System.out.println("Rollback failed: " + ex.getMessage());
+            }
+        }
+    }
+}

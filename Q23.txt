@@ -1,0 +1,26 @@
+// Search.jsp: This program implements a search page using JSP and servlets that allows users to search for a specific item in a database. It displays the search results on the same page.
+// CODE : 
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Search Page</title>
+</head>
+<body>
+	<h1>Search Page</h1>
+	<form action="SearchServlet" method="post">
+		<label for="searchTerm">Search for:</label>
+		<input type="text" name="searchTerm" id="searchTerm" required>
+		<button type="submit">Search</button>
+	</form>
+	<c:if test="${not empty searchResults}">
+		<h2>Search Results</h2>
+		<c:forEach items="${searchResults}" var="result">
+			<p>${result}</p>
+		</c:forEach>
+	</c:if>
+</body>
+</html> 

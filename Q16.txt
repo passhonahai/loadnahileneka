@@ -1,0 +1,65 @@
+// RegistrationServlet.java: This program implements a registration form that accepts user details like name, email, and password, and stores them in a database.
+// CODE : 
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.*;
+import javax.servlet.ServletException;
+import javax.servlet.http.*;
+
+public class RegistrationServlet extends HttpServlet {
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+
+        out.println("<html><body>");
+        out.println("<h2>Registration Form</h2>");
+        out.println("<form method='post'>");
+        out.println("Name: <input type='text' name='name'><br>");
+        out.println("Email: <input type='text' name='email'><br>");
+        out.println("Password: <input type='password' name='password'><br>");
+        out.println("<input type='submit' value='Submit'>");
+        out.println("</form>");
+        out.println("</body></html>");
+    }
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String name = request.getParameter("name");
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+
+        if (name == null || email == null || password == null ||
+                name.trim().isEmpty() || email.trim().isEmpty() || password.trim().isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "All fields are required");
+            return;
+        }
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/biodata", "root", "");
+            PreparedStatement stmt = conn.prepareStatement(
+                     "INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
+
+            stmt.setString(1, name);
+            stmt.setString(2, email);
+            stmt.setString(3, password);
+            int rows = stmt.executeUpdate();
+
+            response.setContentType("text/html");
+            PrintWriter out = response.getWriter();
+            if (rows == 1) {
+                out.println("<html><body>");
+                out.println("<h1>Registration successful!</h1>");
+                out.println("</body></html>");
+            } else {
+                out.println("<html><body>");
+                out.println("<h1>Registration failed!</h1>");
+                out.println("</body></html>");
+            }
+        } catch (ClassNotFoundException | SQLException ex) {
+            throw new ServletException("Error connecting to the database", ex);
+        }
+    }}

@@ -1,0 +1,88 @@
+ 
+// CustomerBean.java: This program implements an entity bean that represents a customer in a database. It defines the fields for customer details like name, address, email, and phone number. It also defines methods for creating, reading, updating, and deleting customer records in the database.
+
+// CODE : 
+import javax.persistence.*;
+
+@Entity
+public class Practical25 implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    private String name;
+    private String address;
+    private String email;
+    private String phone;
+
+    public Practical25() {}
+
+    public Practical25(String name, String address, String email, String phone) {
+        this.name = name;
+        this.address = address;
+        this.email = email;
+        this.phone = phone;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public static Practical25 create(EntityManager em, String name, String address, String email, String phone) {
+        Practical25 practical25 = new Practical25(name, address, email, phone);
+        em.persist(practical25);
+        return practical25;
+    }
+
+    public static Practical25 read(EntityManager em, Long id) {
+        return em.find(Practical25.class, id);
+    }
+
+    public void update(EntityManager em) {
+        em.merge(this);
+    }
+
+    public void delete(EntityManager em) {
+        em.remove(this);
+    }
+
+}

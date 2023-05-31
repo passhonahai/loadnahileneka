@@ -1,0 +1,87 @@
+// FileServer.java: This program implements a file server that allows clients to upload and download files. It exposes two methods: upload and download.
+// CODE : 
+// FileServer.java
+import java.io.*;
+import java.rmi.*;
+import java.rmi.server.*;
+import java.util.*;
+
+public class Practical13 extends UnicastRemoteObject implements FileService {
+    private static final long serialVersionUID = 1L;
+
+    private static final String FILE_DIR = "server_files/";
+    private static final int BUFFER_SIZE = 1024 * 1024;
+
+    public Practical13() throws RemoteException {
+        super();
+    }
+
+    public boolean upload(String filename, byte[] data) throws RemoteException {
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(FILE_DIR + filename);
+            fileOutputStream.write(data);
+            return true;
+        } catch (IOException e) {
+            System.err.println("Error: " + e.getMessage());
+            return false;
+        } finally {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    System.err.println("Error: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    public byte[] download(String filename) throws RemoteException {
+        FileInputStream fileInputStream = null;
+        byte[] data = new byte[BUFFER_SIZE];
+        try {
+            fileInputStream = new FileInputStream(FILE_DIR + filename);
+            int bytesRead = fileInputStream.read(data, 0, BUFFER_SIZE);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            while (bytesRead != -1) {
+                byteArrayOutputStream.write(data, 0, bytesRead);
+                bytesRead = fileInputStream.read(data, 0, BUFFER_SIZE);
+            }
+            byteArrayOutputStream.flush();
+            return byteArrayOutputStream.toByteArray();
+        } catch (IOException e) {
+            System.err.println("Error: " + e.getMessage());
+            return null;
+        } finally {
+            if (fileInputStream != null) {
+                try {
+                    fileInputStream.close();
+                } catch (IOException e) {
+                    System.err.println("Error: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        try {
+            Practical13 fileServer = new Practical13();
+            java.rmi.registry.LocateRegistry.createRegistry(1099);
+            Naming.rebind("//localhost/FileServer", fileServer);
+            System.out.println("File server started");
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+}
+
+FileService.java
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface FileService extends Remote {
+    public boolean upload(String filename, byte[] data) throws RemoteException;
+
+    public byte[] download(String filename) throws RemoteException;
+}

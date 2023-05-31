@@ -1,0 +1,41 @@
+// HelloServer.java: This program implements a simple "Hello, World" server that exposes a single method called sayHello.
+// CODE : 
+// Practical11.java
+import java.rmi.*;
+import java.rmi.server.*;
+
+public class Practical11 extends UnicastRemoteObject implements Hello {
+
+    public Practical11() throws RemoteException {
+        super();
+    }
+
+    public String sayHello() throws RemoteException {
+        return "Hello, World!";
+    }
+
+    public static void main(String args[]) {
+        try {
+            Practical11 obj = new Practical11();
+            java.rmi.registry.LocateRegistry.createRegistry(1099);
+            Naming.rebind("HelloServer", obj);
+            System.out.println("HelloServer bound in registry");
+        } catch (Exception e) {
+            System.out.println("HelloServer err: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+}
+
+// Hello.java
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface Hello extends Remote {
+    String sayHello() throws RemoteException;
+}
+
+	 
+
+
+
